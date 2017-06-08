@@ -6,7 +6,7 @@
 #define F_CPU 8000000UL
 #endif
 
-#if defined(__AVR_ATmega8__)
+#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega88__)
 #define PC_PIN PINC
 #define PIN_BTN 2
 #define PIN_ENC_A 0//4
@@ -19,6 +19,7 @@
 #define PIN_ENC_A 0//4
 #define PIN_ENC_B 1//3
 #endif
+
 
 #define BTN_HOLD_TIMEOUT_MS 800
 

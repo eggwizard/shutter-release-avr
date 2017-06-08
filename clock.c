@@ -52,7 +52,7 @@ void init_clock(void){
 	OCR0A = CLOCK_COUNTER_TOP_VAL; // output compare matchc occured in every 2ms
 	TCCR0A |= (1<<WGM01); // prescale factor = 64, 8us per minor tick
 	TCCR0B |= (1<<CS01)|(1<<CS00);	
-	TIMSK |= (1<<OCIE0A);i
+	TIMSK |= (1<<OCIE0A);
 
 #endif
 
@@ -61,6 +61,13 @@ void init_clock(void){
 	TCCR2 |= (1<<WGM21)|(1<<CS22);
 	TIMSK |= (1<<OCIE2);
 		
+#endif
+
+#if defined(__AVR_ATmega88__)
+	OCR0A = CLOCK_COUNTER_TOP_VAL; // output compare matchc occured in every 2ms
+	TCCR0A |= (1<<WGM01); // prescale factor = 64, 8us per minor tick
+	TCCR0B |= (1<<CS01)|(1<<CS00);	
+	TIMSK0 |= (1<<OCIE0A);
 #endif
 }
 

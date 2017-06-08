@@ -1,5 +1,5 @@
-#ifndef _U8X8_ATTINY2313_H_
-#define _U8X8_ATTINY2313_H_
+#ifndef _U8X8_AVR_HAL_H_
+#define _U8X8_AVR_HAL_H_
 
 #include "u8x8.h"
 

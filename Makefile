@@ -48,7 +48,7 @@
 
 # User defined values
 TARGETNAME = output
-MCU:=atmega8
+MCU:=atmega88
 #MCU:=attiny2313
 #MCU:=attiny85
 F_CPU:=8000000

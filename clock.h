@@ -21,6 +21,10 @@
 #define CLOCK_TIMER_COMP_VECT TIMER2_COMP_vect
 #endif
 
+#if defined(__AVR_ATmega88__)
+#define CLOCK_TIMER_COMP_VECT TIMER0_COMPA_vect
+#endif
+
 void install_timer0(void (*fctparam)(void), unsigned int);
 
 unsigned char is_timer_btn_alive(void);

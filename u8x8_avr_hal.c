@@ -4,16 +4,17 @@
 
 #include "u8x8_avr_hal.h"
 
-#include "TinyWireM_USI.h"
+
 
 #if defined(__AVR_ATtiny85__)
+#include "TinyWireM_USI.h"
 #define I2C_PORT PORTB
 #define I2C_PORT_DIR DDRB
 #define I2C_CLOCK_PORT 2
 #define I2C_DATA_PORT 0
 #endif
 
-#if defined(__AVR_ATmega8__)
+#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega88__)
 
 #define I2C_PORT PORTC
 #define I2C_PORT_DIR DDRC
@@ -22,11 +23,17 @@
 
 #endif
 
+#if defined(__AVR_ATmega88__)
+
+// blah blah
+
+#endif
+
 
 unsigned char u8x8_byte_avr_hw_i2c(u8x8_t *u8x8, unsigned char msg, unsigned char arg_int, void *arg_ptr){
 
 	
-#if defined(__AVR_ATmega8__)	
+#if defined(__AVR_ATmega8__)||defined(__AVR_ATmega88__)	
 	
 	unsigned char *data;
 	unsigned char internal_i2c_mode;
@@ -52,7 +59,8 @@ unsigned char u8x8_byte_avr_hw_i2c(u8x8_t *u8x8, unsigned char msg, unsigned cha
 
 			TWSR=0x00; //set presca1er bits to zero
 			//TWBR=0x46; //SCL frequency is 100K for XTAL = 7.3728M
-			TWBR=2; //SCL frequency is 100K for XTAL = 7.3728M
+			//TWBR=2; //SCL frequency is 100K for XTAL = 7.3728M
+			TWBR=3;
 			TWCR=0x04; //enab1e TWI module
 			
 			break;

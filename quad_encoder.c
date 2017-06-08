@@ -67,6 +67,12 @@ void init_encoder(void)
 	pin_old = PC_PIN;
 #endif
 
+#if defined(__AVR_ATmega88__)
+	PCICR |= (1<<PCIE1);
+	PCMSK1 |= (1<<PIN_BTN)|(1<<PIN_ENC_A)|(1<<PIN_ENC_B);
+
+	pin_old = PC_PIN;
+
 #if defined(__AVR_ATmega8__)
 	
 	MCUCR |= (1<<ISC00);
@@ -77,9 +83,14 @@ void init_encoder(void)
 
 }
 
-#if defined(__AVR_ATtiny85__)
 
+#if defined(__AVR_ATtiny85__)
 ISR(PCINT0_vect){
+#endif
+
+#if defined(__AVR_ATmega88__)
+ISR(PCINT1_vect){
+#endif
 	
 	unsigned char changed_bits, pin_read;
 	char dx = 0;
@@ -158,7 +169,7 @@ ISR(PCINT0_vect){
 }
 #endif
 
-#if defined(__AVR_ATmega8__)
+#if defined(__AVR_ATmega8__) 
 ISR(INT0_vect){
 	
 	unsigned char changed_bits, pin_read;
