@@ -18,7 +18,7 @@ static u8g2_t u8g2; // a structure which will contain all the data for one displ
 
 static void (*draw_fct)(void);
 
-static unsigned int blink_timestamp_ms = 0;
+static unsigned int blink_timestamp_tick = 0;
 static unsigned char blink_flag = 0;
 
 void install_draw_function(void (*fct)(void)){
@@ -70,17 +70,19 @@ void render_oled(void){
 	
 }
 
-int get_value(){
-	return blink_flag;
+unsigned int get_value(){
+	return blink_timestamp_tick;
 }
-
+unsigned int get_value2(){
+	return (unsigned int)(get_tick_counter() + CLOCK_COUNTER_MAX - blink_timestamp_tick)%CLOCK_COUNTER_MAX ;
+}
 
 void print_text(int x, int y, char *msg, unsigned char flag){
 
 	unsigned char offset = 0;
 
-	if((get_tick_counter() + CLOCK_COUNTER_MAX - blink_timestamp_ms/get_tick_time())%CLOCK_COUNTER_MAX >= (OLED_BLINK_INTERVAL_MS/get_tick_time())){
-		blink_timestamp_ms = get_tick_counter()*get_tick_time();
+	if((get_tick_counter() + CLOCK_COUNTER_MAX - blink_timestamp_tick)%CLOCK_COUNTER_MAX >= (OLED_BLINK_INTERVAL_MS/get_tick_time())){
+		blink_timestamp_tick = get_tick_counter();
 		blink_flag ^= (unsigned char)1;
 	}
 

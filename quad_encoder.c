@@ -13,8 +13,11 @@ static unsigned char flag_enc = 0;
 static unsigned char pin_old = 0xff;
 
 static unsigned char counter = 0;
+static unsigned char counter_old = 0;
+
 static unsigned char status_btn_click = 0;
 static unsigned char status_btn_hold = 0;
+
 
 void timer_btn_timeout_handler(void){
 
@@ -47,6 +50,16 @@ unsigned char get_status_btn_hold(void){
 	return ret;
 }
 	
+int get_enc_delta(void){
+
+	int ret_val = 0;
+
+	ret_val = (counter + 0x80 - counter_old)%0x100 - 0x80 ;
+	counter_old = counter;
+
+	return ret_val;
+
+}
 
 unsigned char get_enc_counter(void){
 
@@ -80,6 +93,8 @@ void init_encoder(void)
 	
 	pin_old = PC_PIN;
 #endif
+
+	counter_old = counter;
 
 }
 

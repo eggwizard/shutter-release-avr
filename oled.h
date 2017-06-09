@@ -7,8 +7,8 @@
 
 
 
-#define OLED_USE_COMPACT_LIBRARY 0
-#define OLED_BLINK_INTERVAL_MS 400
+#define OLED_USE_COMPACT_LIBRARY 1
+#define OLED_BLINK_INTERVAL_MS 250
 
 #define OLED_PRINT_INVERT 	1
 #define OLED_PRINT_BLINK 	2
@@ -17,7 +17,8 @@
 #if OLED_USE_COMPACT_LIBRARY
 
 //#define OLED_FONT u8x8_font_artossans8_r
-#define OLED_FONT u8x8_font_chroma48medium8_r
+//#define OLED_FONT u8x8_font_chroma48medium8_r
+#define OLED_FONT u8x8_font_victoriamedium8_r
 //#define OLED_FONT u8x8_font_torussansbold8_r
 
 #else

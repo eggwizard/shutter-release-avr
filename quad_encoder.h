@@ -29,5 +29,7 @@ unsigned char get_status_btn_hold(void);
 
 void init_encoder(void);
 unsigned char get_enc_counter(void);
+int get_enc_delta(void);
+
 
 #endif
