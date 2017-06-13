@@ -29,9 +29,9 @@ int temp2 = 0;
 
 
 unsigned int var_set_lagtime[5] = {0, 2, 5, 10};
-unsigned int var_set_shutter[25] = {1,2,4,6,8, 10, 13,15, 20, 25, 30, 40, 50, 60, 80, 100, 130, 150, 200, 250, 300, 400, 500, 600, 610};
+unsigned int var_set_shutter[25] = {0,1,2,4,6,8, 10, 13,15, 20, 25, 30, 40, 50, 60, 80, 100, 130, 150, 200, 250, 300, 400, 500, 600, 610};
 unsigned int var_set_period[15] = {1, 2, 4, 5, 8, 10, 20, 30, 50, 60, 100, 120, 180, 200, 210};
-unsigned int var_set_num[13] = {1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 22};
+unsigned int var_set_num[13] = {1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 20};
 
 char msg_lagtime[18] 	= "  T_l:%4d sec  ";
 char msg_shutter[18] 	= "  T_s:%4d sec  ";
@@ -106,11 +106,11 @@ void test_func (void){
 	// sprintf(msg_temp, "BTN:%d%d, ENC:%3d", temp1, temp2, get_enc_counter());
 	// print_text(0, 1, msg_temp, 0);
 	
-	sprintf(msg_temp, "cur state:%d", state_cur );
-	print_text(0, 2, msg_temp, 0);
+//	sprintf(msg_temp, "cur state:%d", state_cur );
+//	print_text(0, 2, msg_temp, 0);
 	
-	sprintf(msg_temp, "%d", state_var_menu);
-	print_text(0, 3, msg_temp, 0);
+//	sprintf(msg_temp, "%d", state_var_menu);
+//	print_text(0, 3, msg_temp, 0);
 
 }
 
@@ -126,9 +126,7 @@ void set_state_var(state_var_t *state, int enc_delta){
 			state->idx = state->len;
 			
 			state->var_set[state->idx] += (state->step)*enc_delta;
-						
-
-
+			
 		} else {
 			state->idx = state->len -1;
 		}
@@ -151,7 +149,10 @@ void state_num_job(void){
 	sprintf(msg_temp2, state_var_num.msg_format, state_var_num.var_set[state_var_num.idx]);
 	print_text(0, 1, msg_temp2, OLED_PRINT_BLINK);
 	
-	if (btn_click_input) state_cur = STATE_MAIN;
+	if (btn_click_input) {
+		state_cur = STATE_MAIN;
+		clear_oled();
+	}
 
 }
 
@@ -168,7 +169,10 @@ void state_shutter_job(void){
 	sprintf(msg_temp2, state_var_shutter.msg_format , state_var_shutter.var_set[state_var_shutter.idx]);
 	print_text(0, 1, msg_temp2, OLED_PRINT_BLINK);
 
-	if (btn_click_input) state_cur = STATE_MAIN;
+	if (btn_click_input) {
+		state_cur = STATE_MAIN;
+		clear_oled();
+	}
 }
 
 void state_period_job(void){
@@ -185,7 +189,10 @@ void state_period_job(void){
 	print_text(0, 1, msg_temp2, OLED_PRINT_BLINK);
 
 
-	if (btn_click_input) state_cur = STATE_MAIN;
+	if (btn_click_input) {
+		state_cur = STATE_MAIN;
+		clear_oled();
+	}
 }
 
 void state_timelag_job(void){
@@ -203,23 +210,33 @@ void state_timelag_job(void){
 	print_text(0, 1, msg_temp2, OLED_PRINT_BLINK);
 
 
-	if (btn_click_input) state_cur = STATE_MAIN;
+	if (btn_click_input) {
+		state_cur = STATE_MAIN;
+		clear_oled();
+	}
 }
 
 void state_run_job(void){
 
+	int _temp;
 	int enc_input, btn_click_input, btn_hold_input;
 	
 	enc_input = get_enc_delta();
 	btn_click_input = get_status_btn_click();
 	btn_hold_input = get_status_btn_hold();
+	
+	_temp = pulse_generator_100ms_unit(10, 30, 3, 1);
 
+	sprintf(msg, "value: %d", _temp);
+	print_text(0, 3, msg, 0);
 	
-	
-	if (btn_hold_input) state_cur = STATE_MAIN;
+	if (btn_hold_input) {
+		state_cur = STATE_MAIN;
+		clear_oled();
+	}
 }
 
-state_main_job(){
+void state_main_job(void){
 
 	char msg_temp1[20], msg_temp2[20] = {0};
 	int enc_input, btn_click_input, btn_hold_input;
@@ -255,20 +272,54 @@ state_main_job(){
 
 	if (btn_click_input) {
 		state_cur = state_var_menu;
+		clear_oled();
+
 	} else if (btn_hold_input) {
 		state_cur = STATE_RUN;
+		clear_oled();
 	}
 
 }
 
+void state_common_job(void){
+	char msg_temp[20] = {0};
+	unsigned long duration = 0;
+	unsigned int hour, min, sec = 0;
+
+	if (state_cur != STATE_RUN){
+
+		duration = (long)state_var_num.var_set[state_var_num.idx];
+		duration *= (long)state_var_period.var_set[state_var_period.idx];
+
+		hour = duration/3600;
+		min = (duration%3600)/60;	
+		sec = (duration%3600)%60;
+		if (hour>=100) hour = 99;
+
+		sprintf(msg_temp, "Duration%02d:%02d:%02d", hour, min, sec);
+		print_text(0,3, msg_temp, 0);
+
+		if (state_var_period.var_set[state_var_period.idx] <= state_var_shutter.var_set[state_var_shutter.idx]) 
+			sprintf(msg_temp, " !Check Period! ");
+		else  sprintf(msg_temp, "                ");
+			
+		print_text(0,2, msg_temp, 0);
+
+	} else {
+	
+	
+	}
+
+}
 
 int main(void)
 {
 	sys_init();
 	install_draw_function(test_func);
 
-	for(;;){  
-
+	for(;;){ 
+	   	
+		state_common_job();
 		switch(state_cur){
 
 			case STATE_NUM_SHOT:

@@ -70,18 +70,27 @@ void render_oled(void){
 	
 }
 
-unsigned int get_value(){
-	return blink_timestamp_tick;
-}
-unsigned int get_value2(){
-	return (unsigned int)(get_tick_counter() + CLOCK_COUNTER_MAX - blink_timestamp_tick)%CLOCK_COUNTER_MAX ;
+void clear_oled(void){
+
+#if OLED_USE_COMPACT_LIBRARY
+	u8x8_ClearDisplay(&u8x8);
+#else
+	u8g2_ClearDisplay(&u8g2);
+#endif
+
+
 }
 
 void print_text(int x, int y, char *msg, unsigned char flag){
 
 	unsigned char offset = 0;
 
-	if((get_tick_counter() + CLOCK_COUNTER_MAX - blink_timestamp_tick)%CLOCK_COUNTER_MAX >= (OLED_BLINK_INTERVAL_MS/get_tick_time())){
+	// if((get_tick_counter() + CLOCK_TICK_COUNTER_MAX - blink_timestamp_tick)%CLOCK_TICK_COUNTER_MAX >= (OLED_BLINK_INTERVAL_MS/get_tick_time())){
+	// 	blink_timestamp_tick = get_tick_counter();
+	// 	blink_flag ^= (unsigned char)1;
+	// }
+
+	if((get_tick_counter() + 2*OLED_BLINK_INTERVAL_MS - blink_timestamp_tick)%OLED_BLINK_INTERVAL_MS >= (OLED_BLINK_INTERVAL_MS/get_tick_time())){
 		blink_timestamp_tick = get_tick_counter();
 		blink_flag ^= (unsigned char)1;
 	}

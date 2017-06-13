@@ -32,7 +32,7 @@ void install_draw_function(void (*fct)(void));
 void init_oled(void);
 void render_oled(void);
 void print_text(int x, int y, char *msg, unsigned char);
-
+void clear_oled(void);
 
 /*
 [Draw function example]
