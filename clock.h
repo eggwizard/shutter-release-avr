@@ -1,10 +1,15 @@
 #ifndef _CLOCK_H_
 #define _CLOCK_H_
 
-#define PULSE_PORT      PORTD
-#define PULSE_PORT_DDR  DDRD
-#define PULSE_PIN_MAIN  3
-#define PULSE_PIN_SUB   4
+
+// #define PULSE_GEN_CMD_RUN 1
+// #define PULSE_GEN_CMD_RESET 2
+
+
+// #define PULSE_PORT      PORTD
+// #define PULSE_PORT_DDR  DDRD
+// #define PULSE_PIN_MAIN  3
+// #define PULSE_PIN_SUB   4
 
 #define CLOCK_TICK_COUNTER_MAX 10000
 #define CLOCK_SEC_COUNTER_MAX 20000

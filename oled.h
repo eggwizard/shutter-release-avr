@@ -16,10 +16,12 @@
 
 #if OLED_USE_COMPACT_LIBRARY
 
-//#define OLED_FONT u8x8_font_artossans8_r
+#define OLED_FONT u8x8_font_artossans8_r
 //#define OLED_FONT u8x8_font_chroma48medium8_r
-#define OLED_FONT u8x8_font_victoriamedium8_r
+//#define OLED_FONT u8x8_font_victoriamedium8_r
 //#define OLED_FONT u8x8_font_torussansbold8_r
+//#define OLED_FONT u8x8_font_pressstart2p_r
+
 
 #else
 

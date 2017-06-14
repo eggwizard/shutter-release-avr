@@ -4,6 +4,7 @@
 #include "quad_encoder.h"
 #include "clock.c"
 #include "oled.h"
+#include "pulse_generator.h"
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -240,7 +241,7 @@ void state_run_job(void){
 	btn_click_input = get_status_btn_click();
 	btn_hold_input = get_status_btn_hold();
 	
-	_temp = pulse_generator_100ms_unit(01, 30, 3, 1);
+	_temp = pulse_generator_100ms_unit(010, 30, 3, NULL);
 
 	sprintf(msg, "value: %d", _temp);
 	print_text(0, 3, msg, 0);
@@ -295,8 +296,13 @@ void state_main_job(void){
 		clear_oled();
 
 	} else if (btn_hold_input) {
-		state_cur = STATE_RUN;
-		clear_oled();
+		if (state_var_period.var_set[state_var_period.idx] > state_var_shutter.var_set[state_var_shutter.idx]){
+			state_cur = STATE_RUN;
+			pulse_generator_100ms_unit(10, 30, 3, PULSE_GEN_CMD_RUN);
+			clear_oled();
+
+		} 
+		
 	}
 	
 
