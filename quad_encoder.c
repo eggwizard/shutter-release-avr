@@ -54,7 +54,7 @@ int get_enc_delta(void){
 
 	int ret_val = 0;
 
-	ret_val = (counter + 0x80 - counter_old)%0x100 - 0x80 ;
+	ret_val = (counter + 0x180 - counter_old)%0x100 - 0x80 ;
 	counter_old = counter;
 
 	return ret_val;

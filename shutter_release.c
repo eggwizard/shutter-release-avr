@@ -29,7 +29,7 @@ int temp2 = 0;
 
 
 unsigned int var_set_lagtime[5] = {0, 2, 5, 10};
-unsigned int var_set_shutter[25] = {0,1,2,4,6,8, 10, 13,15, 20, 25, 30, 40, 50, 60, 80, 100, 130, 150, 200, 250, 300, 400, 500, 600, 610};
+unsigned int var_set_shutter[26] = {0,1,2,4,6,8, 10, 13,15, 20, 25, 30, 40, 50, 60, 80, 100, 130, 150, 200, 250, 300, 400, 500, 600, 610};
 unsigned int var_set_period[15] = {1, 2, 4, 5, 8, 10, 20, 30, 50, 60, 100, 120, 180, 200, 210};
 unsigned int var_set_num[13] = {1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 20};
 
@@ -54,13 +54,13 @@ state_var_t state_var_lagtime = {
 	var_set_lagtime, 0, 10, 4, 0, msg_lagtime, 0};
 
 state_var_t state_var_shutter = {
-	var_set_shutter, 1, 600, 24, 1, msg_shutter, 10};
+	var_set_shutter, 0, 1200, 25, 1, msg_shutter, 10};
 
 state_var_t state_var_period = {
-	var_set_period, 1, 200, 14, 1, msg_period, 10};
+	var_set_period, 0, 3600, 14, 1, msg_period, 10};
 
 state_var_t state_var_num = {
-	var_set_num, 1, 20, 12, 1, msg_num, 5};
+	var_set_num, 1, 5000, 12, 1, msg_num, 5};
 
 
 
@@ -116,22 +116,33 @@ void test_func (void){
 
 
 void set_state_var(state_var_t *state, int enc_delta){
+	char msg_temp[20] = {0};
 
-	if (state->var_max >= state->var_set[state->idx])
+
+
+	//if (state->var_max >= state->var_set[state->idx])
+	if (state->var_set[(state->len)-1] >= state->var_set[state->idx])
 		state->idx += enc_delta;
 	
-	if (state->idx <= 0) state->idx = 0;
-	else if (state->idx >= state->len){
+	if (state->idx <= 0) {
+		state->idx = 0;
+	} else if (state->idx >= state->len){
 		if (state->open_end){
 			state->idx = state->len;
 			
-			state->var_set[state->idx] += (state->step)*enc_delta;
+			// state->var_set[state->idx] += (state->step)*enc_delta;
+			// if (state->var_set[state->idx] >= state->var_max) state->var_set[state->idx] = state->var_max;
 			
+			state->var_set[state->len] += (state->step)*enc_delta;
+			if (state->var_set[state->len] >= state->var_max) state->var_set[state->len] = state->var_max;
+			
+
 		} else {
 			state->idx = state->len -1;
 		}
 	}
 
+	
 }
 
 
@@ -166,9 +177,13 @@ void state_shutter_job(void){
 	
 	set_state_var(&state_var_shutter, enc_input);
 	
-	sprintf(msg_temp2, state_var_shutter.msg_format , state_var_shutter.var_set[state_var_shutter.idx]);
+	if (!state_var_shutter.var_set[state_var_shutter.idx]){
+		sprintf(msg_temp2, "  T_s: A Pulse  ");
+	} else {
+		sprintf(msg_temp2, state_var_shutter.msg_format , state_var_shutter.var_set[state_var_shutter.idx]);
+	}
 	print_text(0, 1, msg_temp2, OLED_PRINT_BLINK);
-
+	
 	if (btn_click_input) {
 		state_cur = STATE_MAIN;
 		clear_oled();
@@ -225,7 +240,7 @@ void state_run_job(void){
 	btn_click_input = get_status_btn_click();
 	btn_hold_input = get_status_btn_hold();
 	
-	_temp = pulse_generator_100ms_unit(10, 30, 3, 1);
+	_temp = pulse_generator_100ms_unit(01, 30, 3, 1);
 
 	sprintf(msg, "value: %d", _temp);
 	print_text(0, 3, msg, 0);
@@ -263,7 +278,12 @@ void state_main_job(void){
 			break;
 		default:
 			sprintf(msg_temp1, "< Shutter Time >");
-			sprintf(msg_temp2, state_var_shutter.msg_format, state_var_shutter.var_set[state_var_shutter.idx]);
+
+			if (!state_var_shutter.var_set[state_var_shutter.idx]){
+				sprintf(msg_temp2, "  T_s: A Pulse  ");
+			} else {
+				sprintf(msg_temp2, state_var_shutter.msg_format , state_var_shutter.var_set[state_var_shutter.idx]);
+			}
 			break;
 	}
 	print_text(0, 0, msg_temp1, 0);
@@ -278,6 +298,7 @@ void state_main_job(void){
 		state_cur = STATE_RUN;
 		clear_oled();
 	}
+	
 
 }
 
@@ -286,16 +307,17 @@ void state_common_job(void){
 	unsigned long duration = 0;
 	unsigned int hour, min, sec = 0;
 
+
+	duration = (long)state_var_num.var_set[state_var_num.idx];
+	duration *= (long)state_var_period.var_set[state_var_period.idx];
+
+	hour = duration/3600;
+	min = (duration%3600)/60;	
+	sec = (duration%3600)%60;
+	if (hour>=100) hour = 99;
+
+
 	if (state_cur != STATE_RUN){
-
-		duration = (long)state_var_num.var_set[state_var_num.idx];
-		duration *= (long)state_var_period.var_set[state_var_period.idx];
-
-		hour = duration/3600;
-		min = (duration%3600)/60;	
-		sec = (duration%3600)%60;
-		if (hour>=100) hour = 99;
-
 		sprintf(msg_temp, "Duration%02d:%02d:%02d", hour, min, sec);
 		print_text(0,3, msg_temp, 0);
 
@@ -305,10 +327,9 @@ void state_common_job(void){
 			
 		print_text(0,2, msg_temp, 0);
 
-	} else {
-	
-	
-	}
+	} 
+
+
 
 }
 
@@ -347,6 +368,7 @@ int main(void)
 		}
 
 		render_oled();
+		// _delay_ms(100);
 
 	}
 
