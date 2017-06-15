@@ -11,10 +11,13 @@ int pulse_gen_w_preamble_100ms_unit(int count, int high_duration, int period, in
 	static unsigned char _state_next = 0;
 
 	static int counter_high, counter_low, counter_preamble;
+	// int preamble=0;
 
+	// preamble = _preamble;
 	if (period >= (POWER_SLEEP_SEC * 10)){
 		preamble = WAKEUP_PREAMBLE_MS/100;
 	}
+
 
 	_state_cur = _state_next;
 
@@ -93,9 +96,12 @@ int pulse_gen_w_preamble_100ms_unit(int count, int high_duration, int period, in
 			}
 	}
 
-	// if (!state_cur) return 0;
+	// if (_state_cur == PULSE_STATE_STANBY) return 0;
 	// else return count_remain;
-	return _state_cur;
+	
+	return count_remain;
+
+	// return _state_cur;
 
 }
 
@@ -110,11 +116,6 @@ int pulse_gen_100ms_unit(int count, int high_duration, int period, unsigned char
 	static unsigned char _state_next = 0;
 
 	static int counter_high, counter_low;
-
-	if (period >= (POWER_SLEEP_SEC * 10)){
-		preamble = WAKEUP_PREAMBLE_MS/100;
-	}
-
 
 	_state_cur = _state_next;
 

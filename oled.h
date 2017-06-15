@@ -36,6 +36,9 @@ void render_oled(void);
 void print_text(int x, int y, char *msg, unsigned char);
 void clear_oled(void);
 
+#if OLED_USE_COMPACT_LIBRARY
+void clear_line(int col);
+#endif
 /*
 [Draw function example]
 

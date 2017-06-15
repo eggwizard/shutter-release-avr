@@ -81,6 +81,12 @@ void clear_oled(void){
 
 }
 
+#if OLED_USE_COMPACT_LIBRARY
+void clear_line(int col){
+	u8x8_ClearLine(&u8x8, col);
+}
+#endif
+
 void print_text(int x, int y, char *msg, unsigned char flag){
 
 	unsigned char offset = 0;
