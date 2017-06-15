@@ -241,7 +241,8 @@ void state_run_job(void){
 	btn_click_input = get_status_btn_click();
 	btn_hold_input = get_status_btn_hold();
 	
-	_temp = pulse_generator_100ms_unit(010, 30, 3, NULL);
+	// _temp = pulse_gen_100ms_unit(010, 30, 3, NULL);
+	_temp = pulse_gen_w_preamble_100ms_unit(3,15,40,15,NULL);
 
 	sprintf(msg, "value: %d", _temp);
 	print_text(0, 3, msg, 0);
@@ -298,7 +299,8 @@ void state_main_job(void){
 	} else if (btn_hold_input) {
 		if (state_var_period.var_set[state_var_period.idx] > state_var_shutter.var_set[state_var_shutter.idx]){
 			state_cur = STATE_RUN;
-			pulse_generator_100ms_unit(10, 30, 3, PULSE_GEN_CMD_RUN);
+			// pulse_gen_100ms_unit(10, 30, 3, PULSE_GEN_CMD_RUN);
+			pulse_gen_w_preamble_100ms_unit(3, 15,40,15,PULSE_GEN_CMD_RUN);
 			clear_oled();
 
 		} 
