@@ -38,8 +38,8 @@
 
 
 // unsigned int var_set_lagtime[5] = {0, 2, 5, 10};
-unsigned int var_set_shutter[25] = {0,1,2,4,6,8, 10, 13,15, 20, 25, 30, 40, 60, 80, 100, 130, 150, 200, 250, 300, 400, 500, 600, 610};
-unsigned int var_set_period[17] = {0, 1, 2, 3, 4, 5, 8, 10, 20, 30, 50, 60, 100, 120, 180, 200, 210};
+unsigned int var_set_shutter[24] = {0,1,2,4,6,8, 10, 13,15, 20, 25, 30, 40, 60, 80, 100, 130, 150, 200, 250, 300, 400, 500, 500};
+unsigned int var_set_period[16] = {0, 1, 2, 3, 4, 5, 8, 10, 20, 30, 50, 60, 100, 120, 180, 180};
 unsigned int var_set_num[13] = {1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 20};
 
 // char msg_lagtime[] 	= "  T_l:%4d sec  ";
@@ -63,10 +63,10 @@ typedef struct {
 // 	var_set_lagtime, 0, 10, 4, 0, msg_lagtime, 0};
 
 state_var_t state_var_shutter = {
-	var_set_shutter, 0, 1200, 24, 1, msg_shutter, 10};
+	var_set_shutter, 0, 1200, 23, 1, msg_shutter, 10};
 
 state_var_t state_var_period = {
-	var_set_period, 1, 3600, 16, 1, msg_period, 10};
+	var_set_period, 1, 3600, 15, 1, msg_period, 10};
 
 state_var_t state_var_num = {
 	var_set_num, 2, 5000, 12, 1, msg_num, 5};
@@ -342,7 +342,8 @@ void state_main_job(void){
 		clear_oled();
 
 	} else if (btn_hold_input) {
-		if (state_var_period.var_set[state_var_period.idx] > state_var_shutter.var_set[state_var_shutter.idx]){
+		if ((state_var_period.var_set[state_var_period.idx] > state_var_shutter.var_set[state_var_shutter.idx])
+			|| ( !state_var_period.var_set[state_var_period.idx] && !state_var_shutter.var_set[state_var_shutter.idx] )){
 			state_cur = STATE_RUN;
 			// pulse_gen_100ms_unit(10, 30, 3, PULSE_GEN_CMD_RUN);
 			// pulse_gen_w_preamble_100ms_unit(3, 15,40,15,PULSE_GEN_CMD_RUN);
