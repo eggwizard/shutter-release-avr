@@ -11,7 +11,7 @@
 
 #define PULSE_PORT      PORTD
 #define PULSE_PORT_DDR  DDRD
-#define PULSE_PIN_MAIN  3
+#define PULSE_PIN_MAIN  3//3
 #define PULSE_PIN_SUB   4
 
 #define PULSE_STATE_STANBY	0

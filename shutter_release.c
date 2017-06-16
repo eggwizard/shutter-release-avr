@@ -279,6 +279,8 @@ void state_run_job(void){
 	// print_text(0, 0,msg_temp, NULL);
 
 	sprintf(msg_temp, "Counts:%4d/%4d", state_var_num.var_set[state_var_num.idx]-cnt_remain+1, state_var_num.var_set[state_var_num.idx]);
+	// sprintf(msg_temp, "Counts:%4d/%4d", cnt_remain, state_var_num.var_set[state_var_num.idx]);
+
 	print_text(0, 2, msg_temp, NULL);
 	
 	if (btn_hold_input || (cnt_remain == 0)) {

@@ -28,6 +28,8 @@ int pulse_gen_w_preamble_100ms_unit(int count, int high_duration, int period, in
 	switch(_state_cur){ //state 0:stanby, 1:high, 2:low
 		case PULSE_STATE_PREAMBLE:
 			
+
+			PULSE_PORT &= !(1<<PULSE_PIN_MAIN);
 			PULSE_PORT |=(1<<PULSE_PIN_SUB);
 			counter_high = (counter_preamble + preamble) % CLOCK_100MS_COUNTER_MAX;
 			
@@ -41,6 +43,7 @@ int pulse_gen_w_preamble_100ms_unit(int count, int high_duration, int period, in
 			
 				}
 			}
+			break;
 
 		case PULSE_STATE_HIGH: //STATE_HIGH
 
